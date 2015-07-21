@@ -46,6 +46,7 @@ if(GETTEXT_FOUND AND Qt5LinguistTools_FOUND)
     #TODO: Properly install the built files. This should be done after we move the applications out of the Uranium repo.
     set(languages
         en
+        pt
         x-test
         ru
         fr
