@@ -25,14 +25,16 @@ PreferencesPage {
         id: languageComboBox
         model: ListModel {
             id: languageList
+            //: Portuguese language combo box option
+            ListElement { text: QT_TR_NOOP("Portuguese"); code: "pt" }
+            //: Spanish language combo box option
+            ListElement { text: QT_TR_NOOP("Spanish"); code: "es" }
             //: English language combo box option
             ListElement { text: QT_TR_NOOP("English"); code: "en" }
             //: German language combo box option
             ListElement { text: QT_TR_NOOP("German"); code: "de" }
             //: French language combo box option
 //            ListElement { text: QT_TR_NOOP("French"); code: "fr" }
-            //: Spanish language combo box option
-            ListElement { text: QT_TR_NOOP("Spanish"); code: "es" }
             //: Italian language combo box option
 //             ListElement { text: QT_TR_NOOP("Italian"); code: "it" }
             //: Finnish language combo box option
