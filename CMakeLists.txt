@@ -28,8 +28,8 @@ endif()
 add_custom_target(extract-messages ${CMAKE_SOURCE_DIR}/scripts/extract-messages ${CMAKE_SOURCE_DIR} uranium)
 
 # Build Translations
-find_package(Gettext)
-find_package(Qt5LinguistTools QUIET CONFIG)
+find_package(Gettext REQUIRED)
+find_package(Qt5LinguistTools REQUIRED CONFIG)
 
 if(GETTEXT_FOUND AND Qt5LinguistTools_FOUND)
     include(${CMAKE_SOURCE_DIR}/scripts/ECMPoQmTools.cmake)
