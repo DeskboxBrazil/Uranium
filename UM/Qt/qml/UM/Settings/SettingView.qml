@@ -77,7 +77,7 @@ ScrollView {
                         var h = 0.0;
                         for(var i in children) {
                             var item = children[i];
-                            h += children[i].height;   
+                            h += children[i].height;
                             if(item.settingVisible) {
                                 if(i > 0) {
                                     h += spacing;
@@ -123,22 +123,6 @@ ScrollView {
                                 base.showTooltip(item, position, model.description)
                             }
                             onHideTooltip: base.hideTooltip()
-
-                            Menu {
-                                id: contextMenu;
-
-                                MenuItem {
-                                    //: Settings context menu action
-                                    text: qsTr("Hide this setting");
-                                    onTriggered: delegateItem.settingsModel.hideSetting(model.key);
-                                }
-                                MenuItem {
-                                    //: Settings context menu action
-                                    text: qsTr("Configure setting visiblity...");
-
-                                    onTriggered: if(base.configureSettings) base.configureSettings.trigger();
-                                }
-                            }
                         }
                     }
 
