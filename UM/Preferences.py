@@ -8,7 +8,7 @@ from UM.Resources import Resources
 import os
 import configparser
 
-##      Preferences are application based settings that are saved for future use. 
+##      Preferences are application based settings that are saved for future use.
 #       Typical preferences would be window size, standard machine, etc.
 class Preferences(SignalEmitter):
     def __init__(self):
@@ -17,7 +17,7 @@ class Preferences(SignalEmitter):
         self._file = None
         self._parser = None
         self._preferences = {}
-    
+
     def addPreference(self, key, default_value):
         preference = self._findPreference(key)
         if preference:
@@ -32,22 +32,18 @@ class Preferences(SignalEmitter):
 
     def setValue(self, key, value):
         preference = self._findPreference(key)
-
         if preference:
             preference.setValue(value)
             self.preferenceChanged.emit(key)
-    
+
     def getValue(self, key):
         preference = self._findPreference(key)
-
         if preference:
             return preference.getValue()
-
         return None
 
     def resetPreference(self, key):
         preference = self._findPreference(key)
-
         if preference:
             preference.setValue(preference.getDefault())
             self.preferenceChanged.emit(key)

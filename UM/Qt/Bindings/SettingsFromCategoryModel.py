@@ -8,6 +8,7 @@ from UM.Settings.Setting import Setting
 from UM.Resources import Resources
 from UM.Application import Application
 
+
 class SettingsFromCategoryModel(ListModel):
     NameRole = Qt.UserRole + 1
     TypeRole = Qt.UserRole + 2
@@ -18,7 +19,7 @@ class SettingsFromCategoryModel(ListModel):
     UnitRole = Qt.UserRole + 7
     DescriptionRole = Qt.UserRole + 8
     VisibleRole = Qt.UserRole + 9
-    
+
     def __init__(self, category, parent = None):
         super().__init__(parent)
         self._category = category
@@ -36,7 +37,7 @@ class SettingsFromCategoryModel(ListModel):
         self.addRoleName(self.VisibleRole, "visible")
 
     @pyqtSlot(int, str, "QVariant")
-    ##  Notification that setting has changed.  
+    ##  Notification that setting has changed.
     def setSettingValue(self, index, key, value):
         setting = self._category.getSettingByKey(key)
         if setting:
@@ -51,7 +52,7 @@ class SettingsFromCategoryModel(ListModel):
         if setting:
             setting.setVisible(False);
 
-    ##  Create model for combo box (used by enum type setting) 
+    ##  Create model for combo box (used by enum type setting)
     #   \param options List of strings
     #   \return ListModel with "text":value pairs
     def createOptionsModel(self, options):

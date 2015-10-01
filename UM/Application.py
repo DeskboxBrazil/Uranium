@@ -1,23 +1,23 @@
 # Copyright (c) 2015 Ultimaker B.V.
 # Uranium is released under the terms of the AGPLv3 or higher.
 
-from UM.Controller import Controller
-from UM.PluginRegistry import PluginRegistry
-from UM.Mesh.MeshFileHandler import MeshFileHandler
-from UM.Settings.MachineSettings import MachineSettings
-from UM.Resources import Resources
-from UM.Operations.OperationStack import OperationStack
-from UM.Event import CallFunctionEvent
-from UM.Signal import Signal, SignalEmitter
-from UM.WorkspaceFileHandler import WorkspaceFileHandler
-from UM.Logger import Logger
-from UM.Preferences import Preferences
-
-import threading
 import argparse
 import os
-import urllib.parse
 import sys
+import threading
+import urllib.parse
+
+from UM.Controller import Controller
+from UM.Logger import Logger
+from UM.Mesh.MeshFileHandler import MeshFileHandler
+from UM.Operations.OperationStack import OperationStack
+from UM.PluginRegistry import PluginRegistry
+from UM.Preferences import Preferences
+from UM.Resources import Resources
+from UM.Settings.MachineSettings import MODES_VISIBILITY, MachineSettings
+from UM.Signal import Signal, SignalEmitter
+from UM.WorkspaceFileHandler import WorkspaceFileHandler
+
 
 ##  Central object responsible for running the main event loop and creating other central objects.
 #
@@ -32,14 +32,14 @@ class Application(SignalEmitter):
     def __init__(self, name, version,  **kwargs):
         if(Application._instance != None):
             raise ValueError("Duplicate singleton creation")
-        
-        # If the constructor is called and there is no instance, set the instance to self. 
+
+        # If the constructor is called and there is no instance, set the instance to self.
         # This is done because we can't make constructor private
         Application._instance = self
 
         self._application_name = name
         self._version = version
-        
+
         Signal._app = self
         Resources.ApplicationIdentifier = name
 
@@ -77,8 +77,8 @@ class Application(SignalEmitter):
 
         self._machines = []
         self._active_machine = None
-        
-        self._required_plugins = [] 
+
+        self._required_plugins = []
 
         self._operation_stack = OperationStack()
 
@@ -106,46 +106,46 @@ class Application(SignalEmitter):
 
     ##  Emitted when the application window was closed and we need to shut down the application
     applicationShuttingDown = Signal()
-    
+
     showMessageSignal = Signal()
-    
+
     hideMessageSignal = Signal()
-    
+
     def hideMessage(self, message):
         raise NotImplementedError
-    
+
     def showMessage(self, message):
         raise NotImplementedError
-    
-    ##  Get the version of the application  
-    #   \returns version \type{string} 
+
+    ##  Get the version of the application
+    #   \returns version \type{string}
     def getVersion(self):
         return self._version
-    
+
     ##  Add a message to the visible message list so it will be displayed.
-    #   This should only be called by message object itself. 
+    #   This should only be called by message object itself.
     #   To show a message, simply create it and call its .show() function.
-    #   \param message \type{Message} message object 
+    #   \param message \type{Message} message object
     #   \sa Message::show()
     #def showMessage(self, message):
     #    with self._message_lock:
     #        if message not in self._visible_messages:
     #            self._visible_messages.append(message)
     #            self.visibleMessageAdded.emit(message)
-    
+
     visibleMessageAdded = Signal()
-    
+
     ##  Remove a message from the visible message list so it will no longer be displayed.
-    #   This should only be called by message object itself. 
+    #   This should only be called by message object itself.
     #   in principle, this should only be called by the message itself (hide)
-    #   \param message \type{Message} message object 
+    #   \param message \type{Message} message object
     #   \sa Message::hide()
     #def hideMessage(self, message):
     #    with self._message_lock:
     #        if message in self._visible_messages:
     #            self._visible_messages.remove(message)
     #            self.visibleMessageRemoved.emit(message)
-    
+
     ##  Hide message by ID (as provided by built-in id function)
     #   \param message_id \type{long}
     def hideMessageById(self, message_id):
@@ -156,15 +156,15 @@ class Application(SignalEmitter):
                     found_message = message
         if found_message is not None:
             self.hideMessageSignal.emit(found_message)
-            
-    visibleMessageRemoved = Signal()            
+
+    visibleMessageRemoved = Signal()
 
     ##  Get list of all visible messages
     #   \returns visible_messages \type{list}
     def getVisibleMessages(self):
         with self._message_lock:
             return self._visible_messages
-    
+
     ##  Function that needs to be overriden by child classes with a list of plugin it needs.
     def _loadPlugins(self):
         pass
@@ -174,23 +174,23 @@ class Application(SignalEmitter):
             self.parseCommandLine()
 
         return self._parsed_command_line.get(name, default)
-    
+
     ##  Get name of the application.
     #   \returns application_name \type{string}
     def getApplicationName(self):
         return self._application_name
-    
+
     ##  Set name of the application.
     #   \param application_name \type{string}
     def setApplicationName(self, application_name):
         self._application_name = application_name
-        
+
     ##  Application has a list of plugins that it *must* have. If it does not have these, it cannot function.
     #   These plugins can not be disabled in any way.
     #   \returns required_plugins \type{list}
     def getRequiredPlugins(self):
         return self._required_plugins
-    
+
     ##  Set the plugins that the application *must* have in order to function.
     #   \param plugin_names \type{list} List of strings with the names of the required plugins
     def setRequiredPlugins(self, plugin_names):
@@ -205,7 +205,7 @@ class Application(SignalEmitter):
     #   \returns machines \type{list}
     def getMachines(self):
         return self._machines
-    
+
     ##  Add a machine to the list.
     #   The list is sorted by name
     #   \param machine \type{MachineSettings}
@@ -215,7 +215,7 @@ class Application(SignalEmitter):
         self._machines.sort(key = lambda k: k.getName())
         self.machinesChanged.emit()
         return len(self._machines) - 1
-    
+
     ##  Remove a machine from the list.
     #   \param machine \type{MachineSettings}
     def removeMachine(self, machine):
@@ -230,17 +230,26 @@ class Application(SignalEmitter):
         self.machinesChanged.emit()
 
     machinesChanged = Signal()
-    
+
     ##  Get the currently active machine
     #   \returns active_machine \type{MachineSettings}
     def getActiveMachine(self):
         return self._active_machine
-    
+
     ##  Set the currently active machine
     #   \param active_machine \type{MachineSettings}
     def setActiveMachine(self, machine):
-        if machine == self._active_machine:
-            return
+        visibility = MODES_VISIBILITY[int(Preferences.getInstance().getValue("cura/active_mode") or 0)]
+        if visibility:
+            values = visibility.split(",")
+            for setting in machine.getAllSettings():
+                if setting.getKey() in values:
+                    setting.setVisible(True)
+                else:
+                    setting.setVisible(False)
+
+        # if machine == self._active_machine:
+        #     return
 
         self._active_machine = machine
         self.activeMachineChanged.emit()
@@ -266,10 +275,10 @@ class Application(SignalEmitter):
     #   \returns MeshFileHandler \type{MeshFileHandler}
     def getMeshFileHandler(self):
         return self._mesh_file_handler
-    
+
     ##  Get the workspace file handler of this application.
     #   The difference between this and the mesh file handler is that the workspace handler accepts a node
-    #   This means that multiple meshes can be saved / loaded in this way. 
+    #   This means that multiple meshes can be saved / loaded in this way.
     #   \returns MeshFileHandler
     def getWorkspaceFileHandler(self):
         return self._workspace_file_handler

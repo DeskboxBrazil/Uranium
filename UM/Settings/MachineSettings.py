@@ -1,21 +1,30 @@
 # Copyright (c) 2015 Ultimaker B.V.
 # Uranium is released under the terms of the AGPLv3 or higher.
 
-import traceback
-import sys
-import json
-import configparser
-import os.path
 import collections
+import configparser
+import json
+import os.path
 
-from UM.Settings.SettingsCategory import SettingsCategory
+from UM.i18n import i18nCatalog
+from UM.Resources import Resources
 from UM.Settings.Setting import Setting
+from UM.Settings.SettingsCategory import SettingsCategory
 from UM.Settings.Validators.ResultCodes import ResultCodes
 from UM.Signal import Signal, SignalEmitter
-from PyQt5.QtCore import QCoreApplication
-from UM.Logger import Logger
-from UM.Resources import Resources
-from UM.i18n import i18nCatalog
+
+
+MODES_VISIBILITY = [
+    # basic
+    'layer_height,layer_height_0,wall_thickness',
+    # intermediate
+    'layer_height,layer_height_0,wall_thickness,top_bottom_thickness,wall_overlap_avoid_enabled,top_bottom_pattern,skin_outline_count,xy_offset,material_print_temperature,material_diameter,material_flow,retraction_enable,speed_print,speed_travel,speed_layer_0,speed_slowdown_layers,fill_sparse_density,fill_overlap,fill_sparse_thickness,cool_fan_enabled,cool_fan_full_at_height,cool_min_layer_time,cool_min_layer_time_fan_speed_max,cool_min_speed,cool_lift_head,support_enable,support_type,support_angle,support_xy_distance,support_z_distance,support_bottom_stair_step_height,support_join_distance,support_area_smoothing,support_use_towers,support_minimal_diameter,support_tower_diameter,support_tower_roof_angle,support_pattern,support_connect_zigzags,support_fill_rate,adhesion_type,skirt_line_count,skirt_gap,skirt_minimal_length,brim_line_count,raft_margin,raft_line_spacing,raft_base_thickness,raft_base_linewidth,raft_base_speed,raft_interface_thickness,raft_interface_linewidth,raft_airgap,raft_surface_layers,magic_spiralize,wireframe_enabled,wireframe_printspeed,wireframe_flow,wireframe_top_delay,wireframe_bottom_delay,wireframe_flat_delay,wireframe_up_half_speed,wireframe_top_jump,wireframe_fall_down,wireframe_drag_along,wireframe_strategy,wireframe_straight_before_down,wireframe_roof_fall_down,wireframe_roof_drag_along,wireframe_roof_outer_delay,wireframe_height,wireframe_roof_inset,wireframe_nozzle_clearance',
+    # advanced
+    'layer_height,layer_height_0,wall_line_count,wall_line_width,top_thickness,bottom_thickness,wall_overlap_avoid_enabled,top_bottom_pattern,skin_outline_count,xy_offset,material_print_temperature,material_diameter,material_flow,retraction_enable,retraction_speed,retraction_amount,retraction_min_travel,retraction_combing,retraction_minimal_extrusion,retraction_hop,speed_infill,speed_wall,speed_topbottom,speed_support,speed_travel,skirt_speed,speed_slowdown_layers,fill_pattern,infill_line_distance,fill_overlap,fill_sparse_combine,cool_fan_speed,cool_fan_full_layer,cool_min_layer_time,cool_min_layer_time_fan_speed_max,cool_min_speed,cool_lift_head,support_enable,support_type,support_angle,support_xy_distance,support_top_distance,support_bottom_distance,support_bottom_stair_step_height,support_join_distance,support_area_smoothing,support_use_towers,support_minimal_diameter,support_tower_diameter,support_tower_roof_angle,support_pattern,support_connect_zigzags,support_line_distance,adhesion_type,skirt_line_count,skirt_gap,skirt_minimal_length,brim_line_count,raft_margin,raft_line_spacing,raft_base_thickness,raft_base_linewidth,raft_base_speed,raft_interface_thickness,raft_interface_linewidth,raft_airgap,raft_surface_layers,magic_spiralize,wireframe_enabled,wireframe_printspeed_bottom,wireframe_printspeed_up,wireframe_printspeed_down,wireframe_printspeed_flat,wireframe_flow_connection,wireframe_flow_flat,wireframe_top_delay,wireframe_bottom_delay,wireframe_flat_delay,wireframe_up_half_speed,wireframe_top_jump,wireframe_fall_down,wireframe_drag_along,wireframe_strategy,wireframe_straight_before_down,wireframe_roof_fall_down,wireframe_roof_drag_along,wireframe_roof_outer_delay,wireframe_height,wireframe_roof_inset,wireframe_nozzle_clearance',
+    # expert
+    'layer_height,layer_height_0,wall_line_count,wall_line_width_0,wall_line_width_x,skirt_line_width,skin_line_width,infill_line_width,support_line_width,top_layers,bottom_layers,wall_overlap_avoid_enabled,top_bottom_pattern,skin_outline_count,xy_offset,material_print_temperature,material_diameter,material_flow,retraction_enable,retraction_retract_speed,retraction_prime_speed,retraction_amount,retraction_min_travel,retraction_combing,retraction_minimal_extrusion,retraction_hop,speed_infill,speed_wall_0,speed_wall_x,speed_topbottom,speed_support,speed_travel,skirt_speed,speed_slowdown_layers,fill_pattern,infill_line_distance,fill_overlap,fill_sparse_combine,cool_fan_speed_min,cool_fan_speed_max,cool_fan_full_layer,cool_min_layer_time,cool_min_layer_time_fan_speed_max,cool_min_speed,cool_lift_head,support_enable,support_type,support_angle,support_xy_distance,support_top_distance,support_bottom_distance,support_bottom_stair_step_height,support_join_distance,support_area_smoothing,support_use_towers,support_minimal_diameter,support_tower_diameter,support_tower_roof_angle,support_pattern,support_connect_zigzags,support_line_distance,adhesion_type,skirt_line_count,skirt_gap,skirt_minimal_length,brim_line_count,raft_margin,raft_line_spacing,raft_base_thickness,raft_base_linewidth,raft_base_speed,raft_interface_thickness,raft_interface_linewidth,raft_airgap,raft_surface_layers,magic_spiralize,wireframe_enabled,wireframe_printspeed_bottom,wireframe_printspeed_up,wireframe_printspeed_down,wireframe_printspeed_flat,wireframe_flow_connection,wireframe_flow_flat,wireframe_top_delay,wireframe_bottom_delay,wireframe_flat_delay,wireframe_up_half_speed,wireframe_top_jump,wireframe_fall_down,wireframe_drag_along,wireframe_strategy,wireframe_straight_before_down,wireframe_roof_fall_down,wireframe_roof_drag_along,wireframe_roof_outer_delay,wireframe_height,wireframe_roof_inset,wireframe_nozzle_clearance'
+]
+
 
 class MachineSettings(SignalEmitter):
     def __init__(self):
@@ -81,7 +90,7 @@ class MachineSettings(SignalEmitter):
         self.settingsLoaded.emit() #Emit signal that all settings are loaded (some setting stuff can only be done when all settings are loaded (eg; the conditional stuff)
     settingsLoaded = Signal()
 
-    ##  Load values of settings from file. 
+    ##  Load values of settings from file.
     def loadValuesFromFile(self, file_name):
         config = configparser.ConfigParser()
         config.read(file_name)
@@ -128,10 +137,10 @@ class MachineSettings(SignalEmitter):
 
     def getTypeName(self):
         return self._type_name
-    
+
     def getTypeID(self):
         return self._type_id
-    
+
     ##  Add a category of settings
     def addSettingsCategory(self, category):
         self._categories.append(category)

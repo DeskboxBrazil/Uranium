@@ -9,8 +9,8 @@ from UM.Resources import Resources
 from UM.Application import Application
 
 class SettingsModel(ListModel):
-    
-    NameRole = Qt.UserRole + 1 #Label 
+
+    NameRole = Qt.UserRole + 1 #Label
     CategoryRole =Qt.UserRole + 2 #Key of category
     CollapsedRole = Qt.UserRole + 3 #Is it collapsed
     TypeRole = Qt.UserRole + 4 # Type of setting (int, float, string, etc)
@@ -23,7 +23,7 @@ class SettingsModel(ListModel):
     OptionsRole = Qt.UserRole + 11
     UnitRole = Qt.UserRole + 12
     DescriptionRole = Qt.UserRole + 13
-    
+
     def __init__(self, parent = None):
         super().__init__(parent)
         self._machine_settings = None
@@ -34,9 +34,9 @@ class SettingsModel(ListModel):
         self.addRoleName(self.CategoryRole,"category")
         self.addRoleName(self.CollapsedRole,"collapsed")
         self.addRoleName(self.TypeRole,"type")
-        self.addRoleName(self.ValueRole,"value") 
+        self.addRoleName(self.ValueRole,"value")
         self.addRoleName(self.ValidRole,"valid")
-        self.addRoleName(self.KeyRole,"key") 
+        self.addRoleName(self.KeyRole,"key")
         self.addRoleName(self.DepthRole,"depth")
         self.addRoleName(self.VisibilityRole,"visibility")
         self.addRoleName(self.DisabledRole,"disabled")
@@ -67,7 +67,7 @@ class SettingsModel(ListModel):
                 self.setProperty(index, "collapsed", not item["collapsed"])
 
     @pyqtSlot(int, str, str)
-    ##  Notification that setting has changed.  
+    ##  Notification that setting has changed.
     def settingChanged(self, index, key, value):
         if self._machine_settings.getSettingByKey(key) is not None:
             self._machine_settings.getSettingByKey(key).setValue(value)
@@ -81,7 +81,7 @@ class SettingsModel(ListModel):
             return self._machine_settings.getSettingByKey(key).validate()
         return 5
 
-    ##  Create model for combo box (used by enum type setting) 
+    ##  Create model for combo box (used by enum type setting)
     #   \param options List of strings
     #   \return ListModel with "text":value pairs
     def createOptionsModel(self, options):
@@ -89,7 +89,7 @@ class SettingsModel(ListModel):
         model.addRoleName(self.NameRole,"text")
         for option in options:
             model.appendItem({"text":str(option)})
-        return model    
+        return model
 
     @pyqtSlot()
     ##  Save the current setting values to file.
@@ -117,7 +117,7 @@ class SettingsModel(ListModel):
     ##  Check the visibility of an category.
     #   It's possible that all children settings are invisible, so there is no need to show the category.
     #   \param key key of the category to check
-    #   \return bool 
+    #   \return bool
     def checkVisibilityCategory(self,key):
         for category in self._machine_settings.getAllCategories():
             if category.getLabel() == key and category.isVisible():

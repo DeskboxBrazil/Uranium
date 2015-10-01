@@ -51,4 +51,3 @@ class SettingCategoriesModel(ListModel):
         for index in range(len(self.items)):
             if self.getItem(index)["id"] == category.getKey():
                 self.setProperty(index, "visible", category.isVisible())
-
