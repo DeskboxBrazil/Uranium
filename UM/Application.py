@@ -62,7 +62,7 @@ class Application(SignalEmitter):
         PluginRegistry.addType("extension", self.addExtension)
 
         preferences = Preferences.getInstance()
-        preferences.addPreference("general/language", "en")
+        preferences.addPreference("general/language", "pt")
         try:
             preferences.readFromFile(Resources.getPath(Resources.PreferencesLocation, self._application_name + ".cfg"))
         except FileNotFoundError:
