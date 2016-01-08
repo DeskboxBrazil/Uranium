@@ -27,7 +27,7 @@ Item {
     signal showTooltip(variant position);
     signal hideTooltip();
 
-    MouseArea 
+    MouseArea
     {
         id: mouse;
 
@@ -99,9 +99,9 @@ Item {
                 case "int":
                     return "SettingTextField.qml"
                 case "float":
-                    return "SettingTextField.qml"
+                    return "SettingTextFieldFloat.qml"
                 case "double":
-                    return "SettingTextField.qml"
+                    return "SettingTextFieldFloat.qml"
                 case "enum":
                     return "SettingComboBox.qml"
                 case "boolean":
