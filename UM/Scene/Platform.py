@@ -27,7 +27,7 @@ class Platform(SceneNode.SceneNode):
             )
             self._material.setUniformValue("u_ambientColor", [0.3, 0.3, 0.3, 1.0])
             self._material.setUniformValue("u_diffuseColor", [1.0, 1.0, 1.0, 1.0])
-            self._material.setUniformValue("u_opacity", 0.2)
+            self._material.setUniformValue("u_opacity", 0.8)
             if self._texture:
                 self._material.setUniformTexture("u_texture", Resources.getPath(Resources.ImagesLocation, self._texture))
 
