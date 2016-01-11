@@ -21,11 +21,6 @@ class MachinesModel(ListModel):
         Application.getInstance().activeMachineChanged.connect(self._onActiveMachineChanged)
         self._onMachinesChanged()
 
-    @pyqtSlot()
-    def reload(self):
-        app = Application.getInstance()
-        app.setActiveMachine(app.getActiveMachine())
-
     @pyqtSlot(int)
     def setActive(self, index):
         app = Application.getInstance()

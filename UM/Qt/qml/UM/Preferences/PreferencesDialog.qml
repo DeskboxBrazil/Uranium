@@ -73,8 +73,10 @@ Dialog {
 
         //: General configuration page title
         insertPage(0, qsTr("General"), "", "GeneralPage.qml");
+        //: Machine configuration page title
+        insertPage(1, qsTr("Machine"), "", "../Settings/SettingsConfigurationPage.qml");
         //: Plugins configuration page title
-        insertPage(1, qsTr("Plugins"), "", "PluginsPage.qml");
+        insertPage(2, qsTr("Plugins"), "", "PluginsPage.qml");
 
         pagesList.selection.select(0);
         configPage.source = configPagesModel.get(0).page;

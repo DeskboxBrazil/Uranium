@@ -14,7 +14,7 @@ from UM.Operations.OperationStack import OperationStack
 from UM.PluginRegistry import PluginRegistry
 from UM.Preferences import Preferences
 from UM.Resources import Resources
-from UM.Settings.MachineSettings import MODES_VISIBILITY, MachineSettings
+from UM.Settings.MachineSettings import MachineSettings
 from UM.Signal import Signal, SignalEmitter
 from UM.WorkspaceFileHandler import WorkspaceFileHandler
 
@@ -239,17 +239,8 @@ class Application(SignalEmitter):
     ##  Set the currently active machine
     #   \param active_machine \type{MachineSettings}
     def setActiveMachine(self, machine):
-        visibility = MODES_VISIBILITY[int(Preferences.getInstance().getValue("cura/active_mode") or 0)]
-        if visibility:
-            values = visibility.split(",")
-            for setting in machine.getAllSettings():
-                if setting.getKey() in values:
-                    setting.setVisible(True)
-                else:
-                    setting.setVisible(False)
-
-        # if machine == self._active_machine:
-        #     return
+        if machine == self._active_machine:
+            return
 
         self._active_machine = machine
         self.activeMachineChanged.emit()

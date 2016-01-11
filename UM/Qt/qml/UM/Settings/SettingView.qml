@@ -123,6 +123,21 @@ ScrollView {
                                 base.showTooltip(item, position, model.description)
                             }
                             onHideTooltip: base.hideTooltip()
+                            Menu {
+                                id: contextMenu;
+
+                                MenuItem {
+                                    //: Settings context menu action
+                                    text: qsTr("Hide this setting");
+                                    onTriggered: delegateItem.settingsModel.hideSetting(model.key);
+                                }
+                                MenuItem {
+                                    //: Settings context menu action
+                                    text: qsTr("Configure setting visiblity...");
+
+                                    onTriggered: if(base.configureSettings) base.configureSettings.trigger();
+                                }
+                            }
                         }
                     }
 
