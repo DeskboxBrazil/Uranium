@@ -52,9 +52,9 @@ class Backend(PluginObject, SignalEmitter):
     def close(self):
         if self._socket:
             self._socket.close()
-    
+
     ##  Get the logging messages of the backend connection.
-    #   \returns  
+    #   \returns
     def getLog(self):
         return self._backend_log
 
@@ -69,7 +69,7 @@ class Backend(PluginObject, SignalEmitter):
         else:
             Logger.log("e", "Data length was incorrect for requested type")
             return None
-    
+
     ##  \brief Convert byte array containing 6 floats per vertex
     def convertBytesToVerticeWithNormalsList(self,data):
         result = []
@@ -81,8 +81,8 @@ class Backend(PluginObject, SignalEmitter):
         else:
             Logger.log("e", "Data length was incorrect for requested type")
             return None
-    
-    ##  Get the command used to start the backend executable 
+
+    ##  Get the command used to start the backend executable
     def getEngineCommand(self):
         return [Preferences.getInstance().getValue("backend/location"), "--port", str(self._socket_thread.getPort())]
 
@@ -112,7 +112,7 @@ class Backend(PluginObject, SignalEmitter):
         elif state == SignalSocket.ConnectedState:
             Logger.log("d", "Backend connected on port %s", self._port)
             self.backendConnected.emit()
-    
+
     ##  Private message handler
     def _onMessageReceived(self):
         message = self._socket.takeNextMessage()
@@ -122,10 +122,10 @@ class Backend(PluginObject, SignalEmitter):
             return
 
         self._message_handlers[type(message)](message)
-    
-    ##  Private socket error handler   
+
+    ##  Private socket error handler
     def _onSocketError(self, error):
-        try: 
+        try:
             if error.errno == 98 or error.errno == 48:# Socked in use error
                 self._port += 1
                 self._createSocket()
@@ -135,7 +135,7 @@ class Backend(PluginObject, SignalEmitter):
                 # All these imply the connection to the backend was broken and we need to restart it.
                 Logger.log("i", "Backend crashed or closed. Restarting...")
                 self._createSocket()
-            elif platform.system() == "Windows" or platform.system().startswith('CYGWIN'):
+            elif platform.system() == "Windows":
                 if error.winerror == 10048:# Socked in use error
                     self._port += 1
                     self._createSocket()
@@ -146,7 +146,7 @@ class Backend(PluginObject, SignalEmitter):
                 Logger.log("e", str(error))
         except Exception as e:
             Logger.log("e", "Failed to parse socket error")
-    
+
     ##  Creates a socket and attaches listeners.
     def _createSocket(self):
         if self._socket:
@@ -160,4 +160,3 @@ class Backend(PluginObject, SignalEmitter):
         self._socket.error.connect(self._onSocketError)
 
         self._socket.listen("127.0.0.1", self._port)
-

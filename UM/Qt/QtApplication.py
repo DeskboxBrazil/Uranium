@@ -35,7 +35,7 @@ if int(major) < 5 or int(minor) < 4:
 class QtApplication(QApplication, Application, SignalEmitter):
     def __init__(self, **kwargs):
         plugin_path = ""
-        if sys.platform == "win32":
+        if sys.platform == "win32" or sys.platform == 'cygwin':
             plugin_path = os.path.join(os.path.dirname(os.path.abspath(sys.executable)), "PyQt5", "plugins")
         elif sys.platform == "darwin":
             plugin_path = os.path.join(Application.getInstallPrefix(), "Resources", "plugins")
@@ -93,13 +93,13 @@ class QtApplication(QApplication, Application, SignalEmitter):
 
     def run(self):
         pass
-    
+
     def hideMessage(self, message):
         with self._message_lock:
             if message in self._visible_messages:
                 self._visible_messages.remove(message)
                 self.visibleMessageRemoved.emit(message)
-    
+
     def showMessage(self, message):
         with self._message_lock:
             if message not in self._visible_messages:
@@ -116,18 +116,18 @@ class QtApplication(QApplication, Application, SignalEmitter):
 
         self._engine = QQmlApplicationEngine()
         self.engineCreatedSignal.emit()
-        
+
         self._engine.addImportPath(os.path.join(os.path.dirname(sys.executable), "qml"))
         self._engine.addImportPath(os.path.join(Application.getInstallPrefix(), "Resources", "qml"))
         if not hasattr(sys, "frozen"):
             self._engine.addImportPath(os.path.join(os.path.dirname(__file__), "qml"))
 
         self.registerObjects(self._engine)
-        
+
         self._engine.load(self._main_qml)
-    
+
     engineCreatedSignal = Signal()
-    
+
     def registerObjects(self, engine):
         pass
 
@@ -278,4 +278,3 @@ class _QtFunctionEvent(QEvent):
     def __init__(self, fevent):
         super().__init__(self.QtFunctionEvent)
         self._function_event = fevent
-

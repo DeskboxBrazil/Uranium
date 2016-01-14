@@ -24,7 +24,7 @@ class Theme(QObject):
         self._images = {}
 
         # Workaround for incorrect default font on Windows
-        if sys.platform == "win32":
+        if sys.platform == "win32" or sys.platform == 'cygwin':
             default_font = QFont("Segoe UI")
             default_font.setPointSize(9)
             QCoreApplication.instance().setFont(default_font)
@@ -145,4 +145,3 @@ class Theme(QObject):
 
 def createTheme(engine, script_engine):
     return Theme(engine)
-

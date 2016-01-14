@@ -160,11 +160,11 @@ class Resources:
 
     @classmethod
     def __initializeStoragePaths(cls):
-        if platform.system() == "Windows" or platform.system().startswith('CYGWIN'):
+        if platform.system() == "Windows":
             cls.__config_storage_path = os.path.join(os.path.expanduser("~/AppData/Local/"), cls.ApplicationIdentifier)
         elif platform.system() == "Darwin":
             cls.__config_storage_path = os.path.expanduser("~/.{0}".format(cls.ApplicationIdentifier))
-        elif platform.system() == "Linux":
+        elif platform.system() == "Linux" or platform.system().startswith('CYGWIN'):
             xdg_config_home = ""
             try:
                 xdg_config_home = os.environ["XDG_CONFIG_HOME"]
