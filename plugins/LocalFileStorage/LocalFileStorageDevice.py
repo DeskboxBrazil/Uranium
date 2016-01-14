@@ -34,7 +34,7 @@ class LocalFileStorageDevice(StorageDevice, SignalEmitter):
     removableDrivesChanged = Signal()
 
     def _createRemovableDrives(self):
-        if platform.system() == "Windows":
+        if platform.system() == "Windows" or platform.system().startswith('CYGWIN'):
             from . import WindowsRemovableDrives
             return WindowsRemovableDrives.WindowsRemovableDrives()
         elif platform.system() == "Darwin":

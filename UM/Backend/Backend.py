@@ -135,7 +135,7 @@ class Backend(PluginObject, SignalEmitter):
                 # All these imply the connection to the backend was broken and we need to restart it.
                 Logger.log("i", "Backend crashed or closed. Restarting...")
                 self._createSocket()
-            elif platform.system() == "Windows":
+            elif platform.system() == "Windows" or platform.system().startswith('CYGWIN'):
                 if error.winerror == 10048:# Socked in use error
                     self._port += 1
                     self._createSocket()

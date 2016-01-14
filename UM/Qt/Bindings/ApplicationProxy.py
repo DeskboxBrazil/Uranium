@@ -36,7 +36,7 @@ class ApplicationProxy(QObject):
 
     @pyqtProperty(str, constant=True)
     def platform(self):
-        if platform.system() == "Windows":
+        if platform.system() == "Windows" or platform.system().startswith('CYGWIN'):
             return "windows"
         elif platform.system() == "Darwin":
             return "osx"
