@@ -164,6 +164,10 @@ msgctxt "Mirror Tool description"
 msgid "Mirror Object"
 msgstr ""
 
+msgctxt "Update Checker plugin name"
+msgid "Update Checker"
+msgstr ""
+
 #: /home/ahiemstra/Projects/Ultimaker/uranium/plugins/UpdateChecker/__init__.py:16
 msgctxt "Update Checker plugin description"
 msgid "Checks for updates of the software."
