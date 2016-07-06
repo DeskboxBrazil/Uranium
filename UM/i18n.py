@@ -49,6 +49,8 @@ class i18nCatalog: # [CodeStyle: Ultimaker code style requires classes to start 
     #
     #   \return The translated text or the untranslated text if it was not found in this catalog.
     def i18nc(self, context, text):
+        if self._language and not self.__translation:
+            self._updateLanguage()
         if self.__translation:
             message_with_context = "{0}\x04{1}".format(context, text)
             translated = self.__translation.gettext(message_with_context)

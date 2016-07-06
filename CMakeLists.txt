@@ -40,12 +40,6 @@ set(languages
     en
     pt
     es
-    x-test
-    ru
-    fr
-    de
-    it
-    fi
 )
 foreach(lang ${languages})
     file(GLOB po_files resources/i18n/${lang}/*.po)
